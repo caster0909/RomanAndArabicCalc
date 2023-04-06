@@ -1,7 +1,7 @@
-import java.util.Scanner;
 
+import java.util.Scanner;
 public class Calculator {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ScannerExeption {
         //2+3
         //X+V=XV
         Converter converter = new Converter();
@@ -20,13 +20,16 @@ public class Calculator {
         }
         //Если не нашли арифметического действия, завершаем программу
         if(actionIndex==-1){
-            System.out.println("Некорректное выражение");
-            return;
+            throw new ScannerExeption("ВВЕДЕННАЯ СТРОКА НЕ ЯВЛЯЕТСЯ МАТЕМАТИЧЕСКИМ ВЫРАЖЕНИЕМ");
         }
         //Делим строчку по найденному арифметическому знаку
 
 
         String[] data = exp.split(regexActions[actionIndex]);
+        if (data.length>2){
+            throw new ScannerExeption("ФОРМАТ МАТЕМАТИЧЕСКОЙ ОПЕРАЦИИ НЕ УДОВЛЕТВОРЯЕТ ЗАДАНИЮ - " +
+                    "ДВА ОПЕРАНДА И ОДИН ОПЕРАТОР");
+        }
         //Определяем, находятся ли числа в одном формате (оба римские или оба арабские)
         if(converter.isRoman(data[0]) == converter.isRoman(data[1])){
             int a,b;
@@ -39,11 +42,16 @@ public class Calculator {
                 //v - 5
                 a = converter.romanToInt(data[0]);
                 b = converter.romanToInt(data[1]);
-
+                if (a>10 || b>10){
+                    throw new ScannerExeption("КАЛЬКУЛЯТОР ПРИНЯЛ НА ВХОД ЧИСЛО БОЛЬШЕ 10");
+                }
             }else{
                 //если арабские, конвертируем их из строки в число
                 a = Integer.parseInt(data[0]);
                 b = Integer.parseInt(data[1]);
+                if (a>10 || b>10){
+                    throw new ScannerExeption("КАЛЬКУЛЯТОР ПРИНЯЛ НА ВХОД ЧИСЛО БОЛЬШЕ 10");
+                }
             }
             //выполняем с числами арифметическое действие
             int result;
@@ -71,7 +79,7 @@ public class Calculator {
                 System.out.println(result);
             }
         }else{
-            System.out.println("Числа должны быть в одном формате");
+            throw new ScannerExeption("ИСПОЛЬЗУЮТСЯ ОДНОВРЕМЕННО РАЗНЫЕ СИСТЕМЫ СЧИСЛЕНИЯ");
         }
 
 
